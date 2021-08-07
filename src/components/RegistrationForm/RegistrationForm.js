@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import axios from 'axios';
+import firebase from "firebase";
 import './RegistrationForm.css';
-import {API_BASE_URL, ACCESS_TOKEN_NAME} from '../../constants/apiConstants';
 import { withRouter } from "react-router-dom";
 
 function RegistrationForm(props) {
@@ -9,6 +8,7 @@ function RegistrationForm(props) {
         email : "",
         password : "",
         confirmPassword: "",
+        user: null,
         successMessage: null
     })
     const handleChange = (e) => {
@@ -25,23 +25,17 @@ function RegistrationForm(props) {
                 "email":state.email,
                 "password":state.password,
             }
-            axios.post(API_BASE_URL+'/user/register', payload)
-                .then(function (response) {
-                    if(response.status === 200){
-                        setState(prevState => ({
-                            ...prevState,
-                            'successMessage' : 'Registration successful. Redirecting to home page..'
-                        }))
-                        localStorage.setItem(ACCESS_TOKEN_NAME,response.data.token);
-                        redirectToHome();
-                        props.showError(null)
-                    } else{
-                        props.showError("Some error ocurred");
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });    
+            firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
+            .then((userCredential) => {
+                setState(prevState => ({
+                    ...prevState,
+                    'user': userCredential.user,
+                    'successMessage': 'Registration successful. Redirecting to home page..'
+                }))
+            })
+            .catch((error) => {
+                props.showError(error.message)
+            });  
         } else {
             props.showError('Please enter valid username and password')    
         }
