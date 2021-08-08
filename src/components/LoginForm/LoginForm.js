@@ -43,6 +43,10 @@ function LoginForm(props) {
         props.history.push('/register'); 
         props.updateTitle('Register');
     }
+    const redirectToConvert = () => {
+        props.history.push('/convert'); 
+        props.updateTitle('Convert');
+    }
     return(
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
             <form>
@@ -82,6 +86,10 @@ function LoginForm(props) {
             <div className="registerMessage">
                 <span>Dont have an account? </span>
                 <span className="loginText" onClick={() => redirectToRegister()}>Register</span> 
+            </div>
+            <div className="convertMessage">
+                <span>convert? </span>
+                <span className="convertText" onClick={() => redirectToConvert()}>Convert</span> 
             </div>
         </div>
     )
