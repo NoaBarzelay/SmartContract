@@ -30,6 +30,7 @@ function LoginForm(props) {
                 'user': userCredential.user,
                 'successMessage': 'Login successful. Redirecting to home page..'
             }))
+            redirectToHome();
         })
         .catch((error) => {
             props.showError('Invalid username or password') 

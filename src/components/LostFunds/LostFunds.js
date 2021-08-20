@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { useEffect, useLayoutEffect } from 'react';
 import firebase from "firebase";
-import './Convert.css';
+import './LostFunds.css';
 import { withRouter } from "react-router-dom";
 import Web3 from 'web3';
 import Dex from '../../abis/DEX.json';
@@ -11,7 +11,7 @@ import Token from '../../abis/ERC20Token.json';
 
 function Convert(props) {
     const [state , setState] = useState({
-        val: "0"
+        val: ""
     })
 
     const [account , setAccount] = useState('')
@@ -208,10 +208,10 @@ function Convert(props) {
       </div>
     }
         
-    return( 
+    return(
         <div className="convert">
-            Amount to buy/sell:
-        <input className="inputAmount" placeholder={"how much to send?"} type="text" value={state.val} 
+            Send to:
+        <input className="inputAmount" placeholder={"enter wallet address"} type="text" value={state.val}  size="50"
         onChange={(evt) => setState({
             val: evt.target.value
           })} />

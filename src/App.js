@@ -4,6 +4,7 @@ import Header from './components/Header/Header';
 import LoginForm from './components/LoginForm/LoginForm';
 import RegistrationForm from './components/RegistrationForm/RegistrationForm';
 import Convert from './components/Convert/Convert';
+import LostFunds from './components/LostFunds/LostFunds';
 import Home from './components/Home/Home';
 import PrivateRoute from './utils/PrivateRoute';
 import {
@@ -22,7 +23,13 @@ function App() {
         <div className="container d-flex align-items-center flex-column">
           <Switch>
             <Route path="/" exact={true}>
-              <RegistrationForm showError={updateErrorMessage} updateTitle={updateTitle}/>
+              <Home showError={updateErrorMessage} updateTitle={updateTitle}/>
+            </Route>
+            <Route path="/home" exact={true}>
+              <Home showError={updateErrorMessage} updateTitle={updateTitle}/>
+            </Route>
+            <Route path="/lostfunds">
+              <LostFunds showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
             <Route path="/convert">
               <Convert showError={updateErrorMessage} updateTitle={updateTitle}/>

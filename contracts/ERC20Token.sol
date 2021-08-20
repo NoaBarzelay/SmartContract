@@ -15,14 +15,14 @@ contract ERC20Token is ERC20Interface{
     mapping(address => mapping (address => uint256)) allowed;
     
     
-    constructor(string memory symbol, string memory name, uint8 decimals, uint256 totalSupply) public
+    constructor(/*string memory symbol, string memory name, uint8 decimals, uint256 totalSupply*/) public
     {
-        tokenSymbol      = symbol;
-        tokenName        = name;
-        tokenDecimals    = decimals;
-        tokenTotalSupply = totalSupply;
-        balances[msg.sender]  = totalSupply;
-    }
+        tokenSymbol      = "TEST";//symbol;
+        tokenName        = "TST";//name;
+        tokenDecimals    = 18;//decimals;
+        tokenTotalSupply = 1000000000000000000000000;//totalSupply;
+        balances[msg.sender]  = tokenTotalSupply; 
+    }     
 
 
     function name() public view returns (string memory) {
@@ -46,7 +46,7 @@ contract ERC20Token is ERC20Interface{
     
     function balanceOf(address tokenOwner) public view returns (uint) {
         return balances[tokenOwner];
-    }
+    } 
     
     function transfer(address receiver, uint numTokens) payable public returns (bool) {
         require(numTokens <= balances[msg.sender]);
@@ -64,48 +64,18 @@ contract ERC20Token is ERC20Interface{
     
     function allowance(address owner, address delegate) public view returns (uint) {
         return allowed[owner][delegate];
-    }
+    } 
     
     function transferFrom(address owner, address buyer, uint numTokens) payable public returns (bool) {
-        require(numTokens <= balances[owner]);
-        require(numTokens <= allowed[owner][msg.sender]);
+        require(numTokens <= balances[owner], "owner balance too small");
+        require(numTokens <= allowed[owner][msg.sender], "allowed balance too small");
         balances[owner] = balances[owner] - numTokens;
         allowed[owner][msg.sender] = allowed[owner][msg.sender] - numTokens;
         balances[buyer] = balances[buyer] + numTokens;
         emit Transfer(owner, buyer, numTokens);
-        return true;
-    }
+        return true;   
+    }  
 
 
 }
 
-contract DEX {
-
-    event Bought(uint256 amount);
-    event Sold(uint256 amount);
-
-
-    ERC20Interface public token;
-
-    constructor() public {
-        token = new ERC20Token("TEST", "ERC20", 18, 1000000);
-    }
-
-    function buy() payable public {
-        uint256 amountTobuy = msg.value;
-        uint256 dexBalance = token.balanceOf(address(this));
-
-        token.transfer(msg.sender, amountTobuy);
-        emit Bought(amountTobuy);
-    }
-
-    function sell(uint256 amount) public {
-        require(amount > 0, "You need to sell at least some tokens");
-        uint256 allowance = token.allowance(msg.sender, address(this));
-        require(allowance >= amount, "Check the token allowance");
-        token.transferFrom(msg.sender, address(this), amount);
-        msg.sender.transfer(amount);
-        emit Sold(amount);
-    }
-
-}
