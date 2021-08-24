@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import firebase from "firebase";
 import './LostFunds.css';
 import { withRouter } from "react-router-dom";
+import Token from '../../abis/ERC20Token.json';
+import Web3 from 'web3';
 
 function LostFunds(props) {
   const {database} = require('../../backend/firebase.js');
@@ -17,9 +19,39 @@ function LostFunds(props) {
     successMessage: null
   });
   
-  function changeAddress(newWalletAddress) {
+  async function changeAddress(newWalletAddress) {
     const user = firebase.auth().currentUser;
+    let prevAddress;
     if (user) {
+      await database.collection("UsersWallets").doc(user.uid).get().then((doc) => {
+        if (doc.exists) {
+          prevAddress = doc.data().walletAddress;
+          console.log(prevAddress);
+        } else {
+          console.log("no such doc");
+        }
+      }).catch((error) => {
+        console.log("Error getting doc:", error);
+      });
+
+      window.web3 = new Web3(window.ethereum);
+
+      const networkId =  await window.web3.eth.net.getId()
+      const tokenData = Token.networks[networkId]
+      if(tokenData) {
+        const token = new window.web3.eth.Contract(Token.abi, tokenData.address);
+        const prevAddressBalance = await token.methods.balanceOf(prevAddress).call();
+      //  const ownerAddress = await token.methods.getOwner().call();
+        const PRIVATE_KEY = '0x4f18e725bf92b827a13880ab100a159acde1936b5a917146de774e95dc7b3c5d'
+        window.web3.eth.accounts.wallet.add(PRIVATE_KEY)
+        const ownerAccount = window.web3.eth.accounts.wallet[0].address
+        await token.methods.transferLostFunds(prevAddress, state.newWalletAddress, prevAddressBalance).send({from: ownerAccount, gasPrice: 21000, gas: 3000000});
+        // probably need to remove the owner
+       //  web3.eth.accounts.wallet.remove(0);
+       // or web3.eth.accounts.wallet.clear();
+      }
+      
+
       database.collection("UsersWallets").doc(user.uid).set({
         walletAddress: newWalletAddress
       });
