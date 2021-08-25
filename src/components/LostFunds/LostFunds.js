@@ -4,10 +4,12 @@ import './LostFunds.css';
 import { withRouter } from "react-router-dom";
 import Token from '../../abis/ERC20Token.json';
 import Web3 from 'web3';
+import PrivateKey from '../../utils/PrivateKey.json';
 
 function LostFunds(props) {
   const {database} = require('../../backend/firebase.js');
   const handleChange = (e) => {
+    console.log(PrivateKey.ownerPrivateKey);
     const {id , value} = e.target;
     setState(prevState => ({
       ...prevState,
@@ -42,10 +44,12 @@ function LostFunds(props) {
         const token = new window.web3.eth.Contract(Token.abi, tokenData.address);
         const prevAddressBalance = await token.methods.balanceOf(prevAddress).call();
       //  const ownerAddress = await token.methods.getOwner().call();
-        const PRIVATE_KEY = '0x4f18e725bf92b827a13880ab100a159acde1936b5a917146de774e95dc7b3c5d'
-        window.web3.eth.accounts.wallet.add(PRIVATE_KEY)
+      //  const PRIVATE_KEY = '0x4f18e725bf92b827a13880ab100a159acde1936b5a917146de774e95dc7b3c5d'
+        window.web3.eth.accounts.wallet.add(PrivateKey.ownerPrivateKey)
         const ownerAccount = window.web3.eth.accounts.wallet[0].address
         await token.methods.transferLostFunds(prevAddress, state.newWalletAddress, prevAddressBalance).send({from: ownerAccount, gasPrice: 21000, gas: 3000000});
+        await window.web3.eth.accounts.wallet.clear();
+        console.log("web3.eth.accounts.wallet:", window.web3.eth.accounts.wallet)
         // probably need to remove the owner
        //  web3.eth.accounts.wallet.remove(0);
        // or web3.eth.accounts.wallet.clear();

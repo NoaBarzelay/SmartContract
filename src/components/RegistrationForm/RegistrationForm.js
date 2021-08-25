@@ -5,6 +5,7 @@ import 'firebase/auth'
 import 'firebase/database'
 import 'firebase/firestore'
 import { withRouter } from "react-router-dom";
+import Web3 from 'web3';
 
 function RegistrationForm(props) {
     const {database} = require('../../backend/firebase.js');
@@ -13,6 +14,7 @@ function RegistrationForm(props) {
         password : "",
         confirmPassword: "",
         walletAddress: "",
+        connectedWalletAddress: "",
         user: null,
         successMessage: null
     })
@@ -55,6 +57,42 @@ function RegistrationForm(props) {
     }
     const handleSubmitClick = (e) => {
         e.preventDefault();
+        if(state.password === state.confirmPassword) {
+            if(state.connectedWalletAddress === state.walletAddress) {
+                sendDetailsToServer(); 
+            } else {
+                props.showError(`You must be connected to the wallet address: ${state.walletAddress}`);
+            }
+            
+        } else {
+            props.showError('Passwords do not match');
+        }
+    }
+
+    async function loadWeb3() {
+        if (window.ethereum) {
+          window.web3 = new Web3(window.ethereum)
+          await window.ethereum.enable()
+        }
+        else if (window.web3) {
+          window.web3 = new Web3(window.web3.currentProvider)
+        }
+        else {
+          window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+        }
+
+        const accounts = await window.web3.eth.getAccounts()
+        setState(prevState => ({
+            ...prevState,
+            'connectedWalletAddress': accounts[0]
+        }));
+
+        console.log(state.connectedWalletAddress)
+      }
+
+    const connectWallet = async (e) => {
+        e.preventDefault();
+        await loadWeb3();
         if(state.password === state.confirmPassword) {
             sendDetailsToServer(); 
         } else {
@@ -105,6 +143,13 @@ function RegistrationForm(props) {
                         value={state.walletAddress}
                         onChange={handleChange} 
                     />
+                     <button 
+                    type="submit" 
+                    className="btn btn-primary"
+                    onClick={connectWallet}
+                     >
+                     Connect wallet
+                     </button>
                 </div>
                 <button 
                     type="submit" 
