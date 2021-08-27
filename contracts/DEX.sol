@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.0;
 
 import "./ERC20Interface.sol";
 import "./ERC20Token.sol";
@@ -33,11 +33,11 @@ contract DEX {
         uint256 allowance = token.allowance(msg.sender, address(this));
       //  require(allowance >= amount, "Check the token allowance");
         token.transferFrom(msg.sender, address(this), amount);
-        msg.sender.transfer(amount);
+        payable(msg.sender).transfer(amount);
         emit Sold(amount);
-    }
+    } 
 
-    function () external payable { 
-    }
+   /* function () external payable {   
+    } */
 
 } 

@@ -25,7 +25,7 @@ function App() {
         <div className="container d-flex align-items-center flex-column">
           <Switch>
             <Route path="/" exact={true}>
-              <Home showError={updateErrorMessage} updateTitle={updateTitle}/>
+              <RegistrationForm showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
             <Route path="/home" exact={true}>
               <Home showError={updateErrorMessage} updateTitle={updateTitle}/>
