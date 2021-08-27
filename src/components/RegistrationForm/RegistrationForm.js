@@ -23,9 +23,19 @@ function RegistrationForm(props) {
             [id] : value
         }))
     }
-    const sendDetailsToServer = () => {
+    const sendDetailsToServer = async () => {
         if (state.email.length && state.password.length) {
-            props.showError(null);
+            let addressInUse = false;
+            await database.collection("UsersWallets").where("walletAddress", "==", state.walletAddress)
+                .get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        props.showError('Wallet address is already in use.');
+                        addressInUse = true;
+                    });
+                });
+    
+        if (!addressInUse)
+            {props.showError(null);
             firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
             .then(userCredential => {
                 database.collection("UsersWallets").doc(userCredential.user.uid).set({
@@ -40,7 +50,7 @@ function RegistrationForm(props) {
             .then(() => redirectToHome())
             .catch((error) => {
                 props.showError(error.message)
-            });  
+            });  }
         } else {
             props.showError('Please enter valid username and password')    
         }

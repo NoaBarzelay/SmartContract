@@ -35,10 +35,12 @@ function LoginForm(props) {
         props.updateTitle('Home')
         props.history.push('/home');
     }
+
     const redirectToRegister = () => {
         props.history.push('/register'); 
         props.updateTitle('Register');
     }
+    
     const resetPassword = () => {
         if (state.email) {
             firebase.auth().sendPasswordResetEmail(state.email)

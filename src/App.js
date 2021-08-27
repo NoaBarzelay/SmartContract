@@ -6,13 +6,14 @@ import RegistrationForm from './components/RegistrationForm/RegistrationForm';
 import Convert from './components/Convert/Convert';
 import LostFunds from './components/LostFunds/LostFunds';
 import Home from './components/Home/Home';
+import About from './components/About/About';
 import PrivateRoute from './utils/PrivateRoute';
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom";
-import AlertComponent from './components/AlertComponent/AlertComponent';  
+import AlertComponent from './components/AlertComponent/AlertComponent';
 
 function App() {
   const [title, updateTitle] = useState(null);
@@ -41,9 +42,11 @@ function App() {
             <Route path="/login">
               <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
-           
+            <Route path="/about">
+              <About showError={updateErrorMessage} updateTitle={updateTitle}/>
+            </Route>
             <PrivateRoute path="/home">
-              <Home/>
+              <Home showError={updateErrorMessage} updateTitle={updateTitle}/>
             </PrivateRoute>
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage}/>

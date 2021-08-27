@@ -31,9 +31,8 @@ function Convert(props) {
 
     useLayoutEffect(async () => {
         console.log("here")
-            await loadWeb3()
-            await loadBlockchainData()
-            // Anything in here is fired on component unmount.
+        await loadWeb3()
+        // Anything in here is fired on component unmount.
     }, [])
 
 
@@ -45,8 +44,6 @@ function Convert(props) {
             [id] : value
         }))
     }
-
-
     const redirectToHome = () => {
         props.updateTitle('Home')
         props.history.push('/home');
@@ -58,46 +55,61 @@ function Convert(props) {
 
 
     async function loadBlockchainData() {
-        const web3 = window.web3
-    
-        const accounts = await web3.eth.getAccounts()
-        setAccount(accounts[0])
-    
-        console.log(account);
-       // const ethBalance = await web3.eth.getBalance(account)
-        
-       if(account !== '') {
-        setEthBalance(await web3.eth.getBalance(account))
-       }
-        
-    
-        // Load Token
-        const networkId =  await web3.eth.net.getId()
-        const tokenData = Token.networks[networkId]
-        if(tokenData) {
-          // const token = new web3.eth.Contract(Token.abi, tokenData.address)
-          setToken(new web3.eth.Contract(Token.abi, tokenData.address))
-          if(account !== '') {
-            let tokenBalance = await token.methods.balanceOf(account).call()
-            setTokenBalance(tokenBalance.toString())
-          }
-         
-        } else {
-          window.alert('Token contract not deployed to detected network.')
-        }
-    
-        // Load EthSwap
-        const dexData = Dex.networks[networkId]
-        if(dexData) {
-          // const dex = new web3.eth.Contract(Dex.abi, dexData.address)
-          setDexAddress(dexData.address)
-          setDex(new web3.eth.Contract(Dex.abi, dexAddress))
-        } else {
-          window.alert('EthSwap contract not deployed to detected network.')
-        }
-    
-        setLoading(false)
+      const {database} = require('../../backend/firebase.js');
+      const user = firebase.auth().currentUser;
+      if (!user)
+      {
+        props.showError('User not connected. Please connet to website.')
       }
+      else
+      {
+        var registeredAccount = database.collection("UsersWallets")
+        .doc(user.uid).get().walletAddress;
+        const web3 = window.web3;
+        const accounts = await web3.eth.getAccounts();
+        setAccount(accounts[0]);
+          
+        console.log(account);
+        // const ethBalance = await web3.eth.getBalance(account)
+           
+        if (registeredAccount != account) {
+          props.showError('Given wallet address different than registered address. ' +
+            'Please connect to the correct wallet or go to LostFunds page.')
+        }
+        else
+        {
+          if (account !== '') {
+            setEthBalance(await web3.eth.getBalance(account))
+          }
+          
+          // Load Token
+          const networkId =  await web3.eth.net.getId()
+          const tokenData = Token.networks[networkId]
+          if(tokenData) {
+            // const token = new web3.eth.Contract(Token.abi, tokenData.address)
+            setToken(new web3.eth.Contract(Token.abi, tokenData.address))
+            if(account !== '') {
+              let tokenBalance = await token.methods.balanceOf(account).call()
+              setTokenBalance(tokenBalance.toString())
+            } else {
+                window.alert('Token contract not deployed to detected network.')
+            }
+          
+            // Load EthSwap
+            const dexData = Dex.networks[networkId]
+            if(dexData) {
+                // const dex = new web3.eth.Contract(Dex.abi, dexData.address)
+                setDexAddress(dexData.address)
+                setDex(new web3.eth.Contract(Dex.abi, dexAddress))
+            } else {
+                window.alert('EthSwap contract not deployed to detected network.')
+            }
+          
+            setLoading(false)
+          }
+        }
+      }
+    }
 
     async function loadWeb3() {
         if (window.ethereum) {
@@ -137,8 +149,8 @@ function Convert(props) {
 
     let accounts = [];
     const connectAccount = async () => {
-        await loadBlockchainData();
-       // getAccount();
+      await loadBlockchainData();
+      // getAccount();
       };
       
       async function getAccount() {
@@ -147,7 +159,7 @@ function Convert(props) {
         console.log(accounts);
       }
 
-      //Sending Ethereum to an address
+    //Sending Ethereum to an address
     const sendEthToAddress = async (value) => {
     console.log(value);
 
