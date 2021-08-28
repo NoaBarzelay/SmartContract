@@ -288,7 +288,7 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: GPL-3.0\r\n\r\npragma solidity ^0.8.0;\r\n \r\nabstract contract ERC20Interface {   \r\n \r\n    event Transfer(address indexed owner, address indexed buyer, uint256 numTokens);\r\n    event Approval(address indexed owner, address indexed buyer, uint256 numTokens);\r\n    event Bought(uint256 amountTobuy);\r\n\r\n    function name() virtual public view returns (string memory);\r\n    function symbol() virtual public view returns (string memory);\r\n    function decimals() virtual public view returns (uint8);\r\n    function getOwner() virtual public view returns (address);\r\n    \r\n    function totalSupply() virtual public view returns (uint256 supply);\r\n    function balanceOf(address tokenOwner) virtual public view returns (uint256 balance);\r\n    function allowance(address owner, address delegate) virtual public view returns (uint256 remaining);\r\n    function transfer(address receiver, uint256 numTokens) payable virtual public returns (bool success);\r\n    function transferFrom(address owner, address buyer, uint256 numTokens) payable virtual public returns (bool success);\r\n    function approve(address delegate, uint256 numTokens) virtual public returns (bool success);  \r\n    function transferLostFunds(address lostAddress, address activeAddress, uint numTokens) payable virtual public  returns (bool success);\r\n}             ",
-  "sourcePath": "C:\\Users\\user\\git\\solidity\\SmartContract\\contracts\\ERC20Interface.sol",
+  "sourcePath": "C:\\Users\\t-nobarz\\OneDrive - Microsoft\\Documents\\SmartContract\\contracts\\ERC20Interface.sol",
   "ast": {
     "absolutePath": "project:/contracts/ERC20Interface.sol",
     "exportedSymbols": {
@@ -2817,7 +2817,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-08-24T21:19:06.815Z",
+  "updatedAt": "2021-08-28T16:57:46.648Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

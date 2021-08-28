@@ -3,36 +3,43 @@ import firebase from "firebase";
 import './LoginForm.css';
 import { withRouter } from "react-router-dom";
 
+/*  Login page:
+    Consists of email and password   */
+
 function LoginForm(props) {
+
     const [state , setState] = useState({
         email : "",
         password : "",
         successMessage: null
-    })
+    });
+
     const handleChange = (e) => {
-        const {id , value} = e.target   
+        const {id , value} = e.target; 
         setState(prevState => ({
             ...prevState,
             [id] : value
         }))
-    }
+    };
+
     const handleSubmitClick = (e) => {
         e.preventDefault();
         firebase.auth().signInWithEmailAndPassword(state.email, state.password)
-        .then((userCredential) => {
-            setState(prevState => ({
-                ...prevState,
-                'user': userCredential.user,
-                'successMessage': 'Login successful. Redirecting to home page..'
-            }))
-            redirectToHome();
-        })
-        .catch((error) => {
-            props.showError('Invalid username or password') 
-        });
-    }
+            .then((userCredential) => {
+                setState(prevState => ({
+                    ...prevState,
+                    'user': userCredential.user,
+                    'successMessage': 'Login successful. Redirecting to home page..'
+                }))
+                redirectToHome();
+            })
+            .catch((error) => {
+                props.showError('Invalid username or password') 
+            });
+    };
+
     const redirectToHome = () => {
-        props.updateTitle('Home')
+        props.updateTitle('Home');
         props.history.push('/home');
     }
 
@@ -44,15 +51,15 @@ function LoginForm(props) {
     const resetPassword = () => {
         if (state.email) {
             firebase.auth().sendPasswordResetEmail(state.email)
-            .then(() => setState(prevState => ({
-                ...prevState,
-                'successMessage' : "A reset email was sent to addres: " + state.email
+                .then(() => setState(prevState => ({
+                    ...prevState,
+                    'successMessage' : "A reset email was sent to addres: " + state.email
                 })))
-            .catch((error) => {
-                props.showError('Invalid email.')
-            });
+                .catch((error) => {
+                    props.showError('Invalid email.');
+                });
         } else {
-            props.showError('Please fill email address.')
+            props.showError('Please fill email address.');
         }
     }
 

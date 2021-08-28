@@ -2,6 +2,7 @@ import React from 'react';
 import firebase from "firebase";
 import { withRouter } from "react-router-dom";
 import { ACCESS_TOKEN_NAME } from '../../constants/apiConstants';
+import './Header.css';
 
 /*  Header to logged-in pages:
     Consists of logout button
@@ -19,7 +20,7 @@ function Header(props) {
         title = 'Welcome';
     }
 
-    function renderLogout() {
+    function headerBody() {
         if(props.location.pathname === '/home'){
             return(
                 <div className="ml-auto">
@@ -27,7 +28,12 @@ function Header(props) {
                     <button className="btn btn-danger" onClick={() => handleLogout()}>Logout</button>
                 </div>
             )
-        } else {
+        } else if (props.location.pathname === '/register' || props.location.pathname === '/login' || props.location.pathname === '/') {
+            return(
+                <div className="ml-auto"></div>
+            )
+        }
+        else {
             return(
                 <div className="ml-auto">
                     <button className="btn btn-default" onClick={() => redirectToHome()}>Back</button>
@@ -59,7 +65,7 @@ function Header(props) {
         <nav className="navbar navbar-dark bg-primary">
             <div className="row col-12 d-flex justify-content-center text-white">
                 <span className="h3">{props.title || title}</span>
-                {renderLogout()}
+                {headerBody()}
             </div>
         </nav>
     )

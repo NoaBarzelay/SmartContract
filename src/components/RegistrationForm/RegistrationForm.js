@@ -7,8 +7,14 @@ import 'firebase/firestore'
 import { withRouter } from "react-router-dom";
 import Web3 from 'web3';
 
+/*  Registration page:
+    Consists of email, password, confirm password
+    And Wallet Address which connects on registration   */
+
 function RegistrationForm(props) {
-    const {database} = require('../../backend/firebase.js');
+
+    const {database} = require('../../database/firebase.js');
+
     const [state , setState] = useState({
         email : "",
         password : "",
@@ -17,16 +23,19 @@ function RegistrationForm(props) {
         connectedWalletAddress: "",
         user: null,
         successMessage: null
-    })
+    });
+
     const handleChange = (e) => {
-        const {id , value} = e.target   
+        const {id , value} = e.target; 
         setState(prevState => ({
             ...prevState,
             [id] : value
         }))
     }
+
     const sendDetailsToServer = async () => {
         if (state.email.length && state.password.length) {
+            // Assert input wallet address isn't registered
             let addressInUse = false;
             await database.collection("UsersWallets").where("walletAddress", "==", state.walletAddress)
                 .get().then((querySnapshot) => {
@@ -35,80 +44,77 @@ function RegistrationForm(props) {
                         addressInUse = true;
                     });
                 });
-    
-        if (!addressInUse)
-            {props.showError(null);
-            firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
-            .then(userCredential => {
-                database.collection("UsersWallets").doc(userCredential.user.uid).set({
-                    walletAddress: state.walletAddress
+        
+            if (!addressInUse) {
+                // register user in databases
+                props.showError(null);
+                firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
+                .then(userCredential => {
+                    database.collection("UsersWallets").doc(userCredential.user.uid).set({
+                        walletAddress: state.walletAddress
+                    });
+                    setState(prevState => ({
+                        ...prevState,
+                        'user': userCredential.user,
+                        'successMessage': 'Registration successful. Redirecting to home page..'
+                    }));
+                })
+                .then(() => redirectToHome())
+                .catch((error) => {
+                    props.showError(error.message)
                 });
-                setState(prevState => ({
-                    ...prevState,
-                    'user': userCredential.user,
-                    'successMessage': 'Registration successful. Redirecting to home page..'
-                }));
-            })
-            .then(() => redirectToHome())
-            .catch((error) => {
-                props.showError(error.message)
-            });  }
+            }
         } else {
             props.showError('Please enter valid username and password')    
         }
-    }
+    };
+
     const redirectToHome = () => {
         props.updateTitle('Home')
         props.history.push('/home');
-    }
+    };
+
     const redirectToLogin = () => {
         props.updateTitle('Login')
         props.history.push('/login'); 
-    }
-    const handleSubmitClick = (e) => {
+    };
+
+    const handleSubmitClick = async (e) => {
         e.preventDefault();
-        if(state.password === state.confirmPassword) {
-            if(state.connectedWalletAddress === state.walletAddress) {
+        await connectWallet();
+        if (state.password === state.confirmPassword) {
+            if (state.connectedWalletAddress === state.walletAddress) {
                 sendDetailsToServer(); 
-            } else {
-                props.showError(`You must be connected to the wallet address: ${state.walletAddress}`);
+            } else if (state.connectedWalletAddress !== "") {
+                props.showError('You must be connected to the wallet address you submitted');
             }
-            
+
         } else {
             props.showError('Passwords do not match');
         }
-    }
+    };
 
-    async function loadWeb3() {
+    async function connectWallet() {
         if (window.ethereum) {
-          window.web3 = new Web3(window.ethereum)
-          await window.ethereum.enable()
+            window.web3 = new Web3(window.ethereum);
+            await window.ethereum.enable();
         }
         else if (window.web3) {
-          window.web3 = new Web3(window.web3.currentProvider)
+            window.web3 = new Web3(window.web3.currentProvider);
         }
         else {
-          window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+            props.showError('Non-Ethereum browser detected. You should consider trying MetaMask!');
+            return;
         }
 
-        const accounts = await window.web3.eth.getAccounts()
+        const accounts = await window.web3.eth.getAccounts();
         setState(prevState => ({
             ...prevState,
-            'connectedWalletAddress': accounts[0]
+            'connectedWalletAddress': accounts[0],
+            'successMessage': "You are now connected to the wallet address you submitted and can register"
         }));
-
-        console.log(state.connectedWalletAddress)
-      }
-
-    const connectWallet = async (e) => {
-        e.preventDefault();
-        await loadWeb3();
-        if(state.password === state.confirmPassword) {
-            sendDetailsToServer(); 
-        } else {
-            props.showError('Passwords do not match');
-        }
     }
+
     return(
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
             <form>
@@ -153,19 +159,11 @@ function RegistrationForm(props) {
                         value={state.walletAddress}
                         onChange={handleChange} 
                     />
-                     <button 
-                    type="submit" 
-                    className="btn btn-primary"
-                    onClick={connectWallet}
-                     >
-                     Connect wallet
-                     </button>
                 </div>
                 <button 
                     type="submit" 
                     className="btn btn-primary"
-                    onClick={handleSubmitClick}
-                >
+                    onClick={handleSubmitClick}>
                     Register
                 </button>
             </form>

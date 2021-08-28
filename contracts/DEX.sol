@@ -13,7 +13,7 @@ contract DEX {
     string public name = 'DEX';
 
     constructor(ERC20Token _token) public {
-        //token = new ERC20Token(/*"TEST", "ERC20", 18, 1000000*/);
+        //token = new ERC20Token(/*"SafekeepToken", "ERC20", 18, 1000000*/);
         token = _token;
     } 
 
@@ -39,5 +39,4 @@ contract DEX {
 
    /* function () external payable {   
     } */
-
 } 

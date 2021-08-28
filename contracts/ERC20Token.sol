@@ -19,8 +19,8 @@ contract ERC20Token is ERC20Interface, Ownable {
     
     constructor(/*string memory symbol, string memory name, uint8 decimals, uint256 totalSupply*/) 
     {
-        tokenSymbol      = "TEST";//symbol;
-        tokenName        = "TST";//name;
+        tokenSymbol      = "SafekeepToken";//symbol;
+        tokenName        = "SKT";//name;
         tokenDecimals    = 18;//decimals;
         tokenTotalSupply = 1000000000000000000000000;//totalSupply;
         balances[msg.sender]  = tokenTotalSupply; 
@@ -92,7 +92,5 @@ contract ERC20Token is ERC20Interface, Ownable {
      //   emit Transfer(owner, buyer, numTokens);
         return true;   
     }  
-
-
 } 
 

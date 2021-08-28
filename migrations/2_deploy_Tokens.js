@@ -3,7 +3,7 @@ const DEX = artifacts.require("../contracts/DEX")
 
 module.exports = async function (deployer, network, accounts) {
   // Deploy MyToken
-  await deployer.deploy(ERC20Token/*, "TEST", "ERC20", 18, 1000000*/)
+  await deployer.deploy(ERC20Token/*, "SafekeepToken", "ERC20", 18, 1000000*/)
   const token = await ERC20Token.deployed()
 
   await deployer.deploy(DEX, token.address)
