@@ -47,6 +47,13 @@ module.exports = {
       port: 8545,            // Standard Ethereum port (default: none)
       network_id: "*",       // Any network (default: none)
      },
+     ropsten: {
+      provider: function() {
+        return new HDWalletProvider("illness barely vehicle evolve leave make person believe vibrant predict lift aware", "https://ropsten.infura.io/2709377dc0fe43488c7ac716744707d5")
+      },
+      network_id: 3,
+      gas: 4000000      //make sure this gas allocation isn't over 4M, which is the max
+    },
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
