@@ -12,6 +12,7 @@
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "chai-bignumber": "3.0.0",
+    "dotenv": "^10.0.0",
     "firebase": "^8.9.0",
     "firebase-admin": "^9.11.1",
     "react": "^16.13.1",
@@ -41,5 +42,24 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NoaBarzelay/SmartContract.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NoaBarzelay/SmartContract/issues"
+  },
+  "homepage": "https://github.com/NoaBarzelay/SmartContract#readme",
+  "description": ""
 }
