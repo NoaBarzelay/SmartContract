@@ -106,7 +106,7 @@ function Convert(props) {
     let convertedEtherAmount = etherAmount.toString();
     convertedEtherAmount = window.web3.utils.toWei(convertedEtherAmount, 'Ether');
     setLoading(true);
-    dex.methods.buyTokens().send({ value: convertedEtherAmount, from: account }).on('transactionHash', (hash) => {
+    dex.methods.buyTokens().send({ value: convertedEtherAmount, from: account, gas: 3000000 }).on('transactionHash', (hash) => {
       setLoading(false);
     });
   }
@@ -115,7 +115,7 @@ function Convert(props) {
     let convertedTokenAmount = tokenAmount.toString();
     convertedTokenAmount = window.web3.utils.toWei(convertedTokenAmount, 'Ether');
     setLoading(true);
-    token.methods.approve(dexAddress, convertedTokenAmount).send({ from: account }).on('transactionHash', (hash) => {
+    token.methods.approve(dexAddress, convertedTokenAmount).send({ from: account, gas: 3000000 }).on('transactionHash', (hash) => {
       dex.methods.sellTokens(convertedTokenAmount).send({ from: account }).on('transactionHash', (hash) => {
         setLoading(false)
       })
