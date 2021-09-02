@@ -51,7 +51,7 @@ function LostFunds(props) {
         const prevAddressBalance = await token.methods.balanceOf(prevAddress).call();
         window.web3.eth.accounts.wallet.add(PrivateKey.ownerPrivateKey);
         const ownerAccount = window.web3.eth.accounts.wallet[0].address;
-        await token.methods.transferLostFunds(prevAddress, newWalletAddress, prevAddressBalance).send({from: ownerAccount, gasPrice: 21000, gas: 3000000});
+        await token.methods.transferLostFunds(prevAddress, newWalletAddress, prevAddressBalance).send({from: ownerAccount, gas: 3000000});
         await window.web3.eth.accounts.wallet.clear();
       }
       
